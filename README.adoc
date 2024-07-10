@@ -14,11 +14,88 @@ sanity.
  - modify the `drools-engine.xml` for your desired interval, event count, and event UEIs.
  - cross your fingers and restart OpenNMS
 
+== Testing
+Use the `send-event.pl` script to send a test event to your ONMS instance. The event UEI that
+you send to your ONMS instance must match an event UEI defined in `drools-engine.xml`. 
+
+The following command can be used to test the `uei.opennms.org/test/testtest1` event that is defined
+in the examples provided in this repository:
+
+```
+send-event.pl -i 127.0.0.1 -n 1 uei.opennms.org/test/testtest1
+```
+Use the above command to send five or six events to your ONMS instance and you should see a 
+new event called `uei.opennms.org/test/testtest1_Rollup` appear. 
+
 == Usage
 As described.  The log output from drools is eaten by systemd; you can view it 
 with `journalctl -u opennms`. The event parms from the triggering event are copied
 into the rollup event, so it would probably be helpful if all the event UEIs use
 the same parms and values, but we don't actually check for this.
+
+== How to Customize the Rollup Event
+
+If you want to update the event UEIs that need to generate a rollup event, then edit the
+`drools-engine.xml` file and add a new `rule-set`: 
+
+```xml
+  <rule-set name="eventCountRules-UEI_NAME_HERE">
+    <rule-file>drools-engine.d/eventCount.drl</rule-file>
+    <event>uei.opennms.org/test/UEI_NAME_HERE</event>
+    <global name="EVENT_INTERVAL" type="java.lang.Long" value="30000" />
+    <global name="EVENT_COUNT" type="java.lang.Integer" value="5" />
+    <global name="ROLLUP_UEI" type="java.lang.String" value="uei.opennms.org/test/UEI_EVENT_HERE_Rollup" />
+    <app-context>drools-engine.d/eventCount-context.xml</app-context>
+    <global name="LOG" ref="slf4jLogger"/>
+  </rule-set>
+```
+In the above example, you can name the `rule-set name` to whatever you want. To keep it simple, it 
+is suggested that you only replace "UEI_NAME_HERE". Use the last section of a UEI. 
+
+For example, the following UEI: `uei.opennms.org/threshold/highThresholdExceeded`, I would use `highThresholdExceeded` to 
+replace the "UEI_NAME_HERE" text above. 
+
+The next line to change would be the `<event>` itself. The event doesn't have to be defined. However, if
+you're rolling up an event that a device is sending to your ONMS instance it must already be 
+defined somewhere in `$OPENNMS_HOME/etc/events/`. 
+
+Following the example already being used, the UEI `uei.opennms.org/threshold/highThresholdExceeded`, exists in 
+`$OPENNMS_HOME/etc/events/opennms.default.threshold.events.xml`. If ONMS generates the high threshold 
+event more than five times, it will cause the rollup event to be created. 
+
+Lastly the `ROLLUP_UEI` should be changed. Make it something unique, so that you know it's a 
+rolled up event. To make things easier you can use the entire UEI event name and add
+"_ROLLUP_EVENT" to the end of it. 
+
+Again, following our example of the `highTresholdExceed` event. That line would look like: 
+`<global name="ROLLUP_UEI" type="java.lang.String" value="uei.opennms.org/threshold/highThresholdExceeded_Rollup" />`.
+
+As long as the `ROLLUP_UEI` event is defined somewhere in an event definition you can control
+whether the rollup event is created as a Major, Minor, or Warning event. I would create a new 
+event definition for the `highThresholdExceeded_Rollup` event and change the severity of it. 
+You could even make it an alarm by adding `alarm-data` to the event definition. 
+
+
+Following the example above, the `rule-set` for `highThresholExceeded` would look like this: 
+
+```xml
+  <rule-set name="eventCountRules-highThresholdExceeded">
+    <rule-file>drools-engine.d/eventCount.drl</rule-file>
+    <event>uei.opennms.org/threshold/highThresholdExceeded</event>
+    <global name="EVENT_INTERVAL" type="java.lang.Long" value="30000" />
+    <global name="EVENT_COUNT" type="java.lang.Integer" value="5" />
+    <global name="ROLLUP_UEI" type="java.lang.String" value="uei.opennms.org/threshold/highThresholdExceeded_Rollup" />
+    <app-context>drools-engine.d/eventCount-context.xml</app-context>
+    <global name="LOG" ref="slf4jLogger"/>
+  </rule-set>
+```
+You can also change the `EVENT_INTEVAL` and `EVENT_COUNT`. 
+
+The `EVENT_INTERVAL` is written in milliseconds. By default the event interval has been set to 30000, which is 30 seconds. 
+This means that all five events have to come in within that 30 second window. If four events come in within 30 seconds, 
+but the fifth one comes in a minute later the rollup event won't be created. 
+
+The `EVENT_COUNT` is a counter for how many `events` have to come in before the rollup event is created.
 
 == Questions?
 Ping @dino2gnt in https://chat.opennms.com/opennms/[the OpenNMS Mattermost chat]
