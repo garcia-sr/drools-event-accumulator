@@ -22,3 +22,6 @@ the same parms and values, but we don't actually check for this.
 
 == Questions?
 Ping @dino2gnt in https://chat.opennms.com/opennms/[the OpenNMS Mattermost chat]
+
+== Updates
+ - 07/10/2024: Updated the `drools-engine.xml` and `eventCount.drl` files to add the ability to assign and rename the Rollup Event UEI. This was added by Mark Mahacek. 
