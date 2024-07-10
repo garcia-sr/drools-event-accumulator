@@ -98,7 +98,7 @@ but the fifth one comes in a minute later the rollup event won't be created.
 The `EVENT_COUNT` is a counter for how many `events` have to come in before the rollup event is created.
 
 == Questions?
-Ping @dino2gnt in https://chat.opennms.com/opennms/[the OpenNMS Mattermost chat]
+Ping @sgarcia in https://chat.opennms.com/opennms/[the OpenNMS Mattermost chat]
 
 == Updates
  - 07/10/2024: Updated the `drools-engine.xml` and `eventCount.drl` files to add the ability to assign and rename the Rollup Event UEI. This was added by Mark Mahacek. 
