@@ -7,7 +7,8 @@
     <rule-file>drools-engine.d/eventCount.drl</rule-file>
     <event>uei.opennms.org/test/testtest3</event>
     <global name="EVENT_INTERVAL" type="java.lang.Long" value="30000" />
-    <global name="EVENT_COUNT" type="java.lang.Integer" value="10" />
+    <global name="EVENT_COUNT" type="java.lang.Integer" value="5" />
+    <global name="ROLLUP_UEI" type="java.lang.String" value="uei.opennms.org/test/testtest3_Rollup" />
     <app-context>drools-engine.d/eventCount-context.xml</app-context>
     <global name="LOG" ref="slf4jLogger"/>
   </rule-set>
@@ -15,7 +16,8 @@
     <rule-file>drools-engine.d/eventCount.drl</rule-file>
     <event>uei.opennms.org/test/testtest2</event>
     <global name="EVENT_INTERVAL" type="java.lang.Long" value="30000" />
-    <global name="EVENT_COUNT" type="java.lang.Integer" value="10" />
+    <global name="EVENT_COUNT" type="java.lang.Integer" value="5" />
+    <global name="ROLLUP_UEI" type="java.lang.String" value="uei.opennms.org/test/testtest2_Rollup" />
     <app-context>drools-engine.d/eventCount-context.xml</app-context>
     <global name="LOG" ref="slf4jLogger"/>
   </rule-set>
@@ -23,7 +25,8 @@
     <rule-file>drools-engine.d/eventCount.drl</rule-file>
     <event>uei.opennms.org/test/testtest1</event>
     <global name="EVENT_INTERVAL" type="java.lang.Long" value="30000" />
-    <global name="EVENT_COUNT" type="java.lang.Integer" value="10" />
+    <global name="EVENT_COUNT" type="java.lang.Integer" value="5" />
+    <global name="ROLLUP_UEI" type="java.lang.String" value="uei.opennms.org/test/testtest1_Rollup" />
     <app-context>drools-engine.d/eventCount-context.xml</app-context>
     <global name="LOG" ref="slf4jLogger"/>
   </rule-set>
